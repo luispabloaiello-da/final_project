@@ -1,0 +1,32 @@
+(base) PS D:\vscode101> git clone https://github.com/luispabloaiello-da/final_project.git
+Cloning into 'final_project'...
+warning: You appear to have cloned an empty repository.
+(base) PS D:\vscode101> cd .\final_project\
+(base) PS D:\vscode101\final_project> uv venv final_project
+Using CPython 3.13.5 interpreter at: C:\ProgramData\anaconda3\python.exe
+Creating virtual environment at: final_project
+Activate with: final_project\Scripts\activate
+(base) PS D:\vscode101\final_project> .\final_project\Scripts\activate
+(base) (final_project) PS D:\vscode101\final_project> git lfs install
+Updated Git hooks.
+Git LFS initialized.
+(base) (final_project) PS D:\vscode101\final_project> git lfs track .\data\raw\*.csv
+Tracking "data/raw/*.csv"
+(base) (final_project) PS D:\vscode101\final_project> git lfs track .\data\clean\*.csv
+Tracking "data/clean/*.csv"
+(base) (final_project) PS D:\vscode101\final_project> git add .\.gitattributes
+warning: in the working copy of '.gitattributes', CRLF will be replaced by LF the next time Git touches it
+(base) (final_project) PS D:\vscode101\final_project> git init
+Reinitialized existing Git repository in D:/vscode101/final_project/.git/
+(base) (final_project) PS D:\vscode101\final_project> uv init
+Adding `final-project` as member of workspace `D:\vscode101`
+Initialized project `final-project`
+(base) (final_project) PS D:\vscode101\final_project> python -m ipykernel install --user --name=final_project
+D:\vscode101\final_project\final_project\Scripts\python.exe: No module named ipykernel
+(base) (final_project) PS D:\vscode101\final_project> ipython kernel install --user --name venv --final_project
+usage: ipython-kernel-install [-h] [--user] [--name NAME] [--display-name DISPLAY_NAME] [--profile PROFILE]
+                              [--prefix PREFIX] [--sys-prefix] [--env ENV VALUE] [--frozen_modules]
+ipython-kernel-install: error: unrecognized arguments: --final_project
+(base) (final_project) PS D:\vscode101\final_project> ipython kernel install --user --name=final_project
+Installed kernelspec final_project in C:\Users\pablo\AppData\Roaming\jupyter\kernels\final_project
+(base) (final_project) PS D:\vscode101\final_project> uv pip install -r .\pyproject.toml
