@@ -44,12 +44,12 @@ Below we document each analysis step exactly as performed, with **purpose**, **w
 - **Insight (paste):**
   > **Insight:** Target is roughly balanced across classes (0: 373, 1: 358, 2: 369), so standard stratified splits and macro‑averaged metrics are appropriate. fileciteturn1file0
 
-#### C) Descriptive distributions & outliers (numeric features)
+#### 8) Descriptive distributions & outliers (numeric features)
 - **Purpose:** Inspect spread and unusual values that may bias models.
 - **What the code does:** Plots histograms/boxplots; flags outliers using **IQR** (Q1 − 1.5×IQR, Q3 + 1.5×IQR) or z‑scores; counts % of outliers per feature.
 - **Why it matters for ML:** Outliers can distort distance‑based models and inflate variance; informs whether to cap/winsorize or use robust models.
 - **Insight (paste):**
-  > **Insight:** Three features show >5% outliers; consider winsorization or robust models/metrics if they degrade performance. fileciteturn1file0
+  > **Insight:** Three features show > 5% outliers; consider winsorization or robust models/metrics if they degrade performance. fileciteturn1file0
 
 #### D) Correlation analysis (target & inter‑feature)
 - **Purpose:** Find linear associations with `stress_level` and detect redundant features.
