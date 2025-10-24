@@ -168,7 +168,7 @@ def _apply_feature_selector_mask(names, pipeline):
 
 def get_feature_names_after_preprocess(pipeline, X_fit_columns=None):
     """
-    Return the feature names *after* the preprocessing step inside your pipeline.
+    Return the feature names *after* the preprocessing step inside the pipeline.
     - pipeline: a fitted sklearn/imblearn Pipeline that contains a ColumnTransformer
     - X_fit_columns: original X columns (df.columns). Helps the fallback path.
     """
@@ -352,7 +352,7 @@ def run_models_with_importances(
 
             if save_csv:
                 safe = name.replace(" ", "_")
-                fi_df.head(50).to_csv(f"{csv_prefix}{safe}.csv", index=False)
+                fi_df.head(top).to_csv(f"{csv_prefix}{safe}.csv", index=False)
 
         except TypeError:
             # No native importances/coefs (e.g., KNN, RBF SVC)
