@@ -75,6 +75,26 @@ def quick_outlier_scan(df: pd.DataFrame, cols=[], k: float = 1.5, title_prefix:s
         ax.set_title(f"{title_prefix}{c} (box + IQR)"); 
         plt.show()
 
+def drop_outliers_iqr(df: pd.DataFrame, cols=[], k: float = 1.5, how:str='any'):
+    """
+    how='any' -> deletes a row if it's an outlier in at least one column
+    how='all' -> deletes a row only if it's an outlier in all columns
+    """
+    d = df.copy()
+    mask_out = pd.Series(False, index=d.index)      # Start with "no rows are outliers"
+    for c in cols:
+        lo, hi = iqr_bounds(d[c], k)
+        col_out = (d[c] < lo) | (d[c] > hi)
+        # Update global mask according to the chosen logic
+        if how == 'any':
+            mask_out = mask_out | col_out        # flag if outlier in ANY selected column
+        else:  # 'all'
+            mask_out = mask_out & col_out        # flag only if outlier in ALL columns
+        #mask_out = (mask_out | col_out) if how=='any' else (mask_out & col_out)
+    kept = d.loc[~mask_out].copy()
+    removed = d.loc[mask_out].copy()
+    return kept, removed
+
 #================================================================
 # Model explainability helpers: feature names & importances/coeffs
 #================================================================
@@ -302,8 +322,6 @@ def run_models_with_importances(
           'importances': {model_name: pd.DataFrame or None, ...}
         }
     """
-    from sklearn.pipeline import Pipeline as SkPipeline  # local import for safety
-
     # choose pipeline class
     if pipeline_cls is None:
         pipeline_cls = SkPipeline
