@@ -19,14 +19,14 @@ We grouped the ~20 variables into five factor families provided by the study des
 ## Data Sources
 
 - **Student Stress Monitoring dataset** (survey‑based; ~20 features across 5 factor groups).
-- **`_main_.ipynb`** — primary analysis notebook used in this project.
-- **`analysis_summary.txt`** — machine‑readable summary produced from `_main_.ipynb` runs; used to collect and report the key statistics and recommendations. fileciteturn1file0
+- **`_main_dataset_analysis.ipynb`** — primary analysis notebook used in this project.
+- **`analysis_summary.txt`** — machine‑readable summary produced from `_main_dataset_analysis.ipynb` runs; used to collect and report the key statistics and recommendations. fileciteturn1file0
 
 ---
 
 ## Main Files and Structure
 
-### 1. `_main_.ipynb` (primary analysis)
+### 1. `_main_dataset_analysis.ipynb` (primary analysis)
 
 Below we document each analysis step exactly as performed, with **purpose**, **what the code does**, **why it matters for ML**, and a short **insight snippet** you can paste back into the notebook.
 
@@ -117,7 +117,7 @@ Human‑readable documentation of the analysis and how it prepares the dataset f
 
 ## How to Use
 
-1. Open **`_main_.ipynb`** and run cells top‑to‑bottom to reproduce the EDA and summaries.
+1. Open **`_main_dataset_analysis.ipynb`** and run cells top‑to‑bottom to reproduce the EDA and summaries.
 2. Review **`analysis_summary.txt`** for quick stats and copy‑ready tables. fileciteturn1file0
 3. Move to modeling notebooks:
    - Start with **Logistic Regression / Random Forest / Gradient Boosting** as baselines.
@@ -129,7 +129,7 @@ Human‑readable documentation of the analysis and how it prepares the dataset f
 
 ## Files Included
 
-- `_main_.ipynb` — main analysis notebook (EDA & preparation for ML).
+- `_main_dataset_analysis.ipynb` — main analysis notebook (EDA & preparation for ML).
 - `analysis_summary.txt` — generated summary of key stats and recommendations. fileciteturn1file0
 - `README_StudentStress_DA.md` — this documentation file.
 
@@ -138,7 +138,6 @@ Human‑readable documentation of the analysis and how it prepares the dataset f
 ## Authors
 
 - Luis Pablo Aiello (Student, Data Analytics cohort)  
-- Class collaborators (add names as appropriate)
 
 ---
 
