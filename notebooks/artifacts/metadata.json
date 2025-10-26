@@ -1,0 +1,60 @@
+{
+  "model_name": "AdaBoost",
+  "version": "1.0.0",
+  "timestamp": 1761416345,
+  "sklearn_version": "1.7.2",
+  "metrics": {
+    "accuracy": 0.8864
+  },
+  "params": {
+    "algorithm": "deprecated",
+    "estimator": null,
+    "learning_rate": 1.0,
+    "n_estimators": 50,
+    "random_state": 42
+  },
+  "train_columns": [
+    "anxiety_level",
+    "self_esteem",
+    "mental_health_history",
+    "depression",
+    "headache",
+    "blood_pressure",
+    "sleep_quality",
+    "breathing_problem",
+    "noise_level",
+    "living_conditions",
+    "safety",
+    "basic_needs",
+    "academic_performance",
+    "study_load",
+    "teacher_student_relationship",
+    "future_career_concerns",
+    "social_support",
+    "peer_pressure",
+    "extracurricular_activities",
+    "bullying"
+  ],
+  "defaults": {
+    "anxiety_level": 11.0,
+    "self_esteem": 19.0,
+    "mental_health_history": 0.0,
+    "depression": 12.0,
+    "headache": 3.0,
+    "blood_pressure": 2.0,
+    "sleep_quality": 2.5,
+    "breathing_problem": 3.0,
+    "noise_level": 3.0,
+    "living_conditions": 2.0,
+    "safety": 2.0,
+    "basic_needs": 3.0,
+    "academic_performance": 2.0,
+    "study_load": 2.0,
+    "teacher_student_relationship": 2.0,
+    "future_career_concerns": 2.0,
+    "social_support": 2.0,
+    "peer_pressure": 2.0,
+    "extracurricular_activities": 2.5,
+    "bullying": 3.0
+  }
+}
