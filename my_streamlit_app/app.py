@@ -9,7 +9,7 @@ st.set_page_config(page_title="Student Stress — ML Demo", layout="wide")
 
 # -------- Paths --------
 MODELS_DIR   = Path(__file__).parent / "models"
-FEATURES_PATH = MODELS_DIR / "feature_names.pkl"   # should contain TOP FEATURES ONLY
+FEATURES_PATH = MODELS_DIR / "feature_names.pkl"   # ALL training features saved by the export cell
 TESTSET_PATH  = MODELS_DIR / "test_set.csv"
 
 # -------- Loaders (cached) --------
@@ -50,9 +50,8 @@ def sanitized_name(name: str) -> str:
     return re.sub(r"[^A-Za-z0-9_+ -]+", " ", name).strip()
 
 def ensure_int_df(df: pd.DataFrame, feature_names: list[str]) -> pd.DataFrame:
-    # Keep only known columns, correct order, coerce to integers.
+    # Keep only known columns, correct order, coerce to integers (as requested).
     X = df[feature_names].copy()
-    # coerce to int; if any column cannot be cast, raise
     return X.astype("int64", errors="raise")
 
 def predict_single(pipe, feature_names):
@@ -74,7 +73,7 @@ def predict_single(pipe, feature_names):
 
 def predict_batch(pipe, feature_names):
     st.subheader("Batch Prediction (CSV upload)")
-    up = st.file_uploader("Upload CSV with the training TOP-FEATURE columns", type=["csv"])
+    up = st.file_uploader("Upload CSV with the training feature columns", type=["csv"])
     if up is not None:
         df = pd.read_csv(up)
         st.write("Preview:", df.head())
@@ -117,7 +116,7 @@ def evaluate_on_test(pipe, testset, feature_names, target_col="stress_level"):
 
 # -------- Main App --------
 def main():
-    st.title("🎓 Student Stress — Model Explorer (Top-Features & Integer Inputs)")
+    st.title("🎓 Student Stress — Model Explorer (Integer Inputs)")
 
     try:
         feature_names = load_feature_names()

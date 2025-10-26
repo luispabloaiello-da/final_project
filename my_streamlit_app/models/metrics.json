@@ -1,32 +1,32 @@
 {
   "KNN(k=5)": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8545454545454545
   },
   "LogisticRegression": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8818181818181818
   },
   "DecisionTree": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8590909090909091
   },
   "Baseline LogReg": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8818181818181818
   },
   "LogReg + ROS": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8818181818181818
   },
   "LogReg + RUS": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8818181818181818
   },
   "LogReg + SMOTE": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8863636363636364
   },
   "Random Forest (best)": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8818181818181818
   },
   "Gradient Boosting (best)": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8909090909090909
   },
   "AdaBoost (best)": {
-    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+    "accuracy": 0.8863636363636364
   }
 }
