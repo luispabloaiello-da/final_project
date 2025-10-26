@@ -102,9 +102,15 @@ def drop_outliers_iqr(df: pd.DataFrame, cols=[], k: float = 1.5, how:str='any'):
 # Evaluation helpers
 def evaluate_classifier(y_true, y_pred, title='Model'):
     print(f'=== {title} ===')
-    print('Accuracy:', round(accuracy_score(y_true, y_pred), 4))
-    print('\nConfusion matrix:')
-    print(confusion_matrix(y_true, y_pred))
+    print('Prediction Accuracy:', round(accuracy_score(y_true, y_pred), 4))
+    # Confusion Matrix Visualization
+    cm = confusion_matrix(y_true, y_pred)
+    plt.figure(figsize=(6,4))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='YlGnBu')
+    plt.title('Confusion Matrix')
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.show()
     print('\nClassification report:')
     print(classification_report(y_true, y_pred, digits=4, zero_division=0))
 
