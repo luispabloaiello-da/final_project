@@ -7,26 +7,17 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 
 st.set_page_config(page_title="Student Stress — ML Demo", layout="wide")
 
-# -------- Paths --------
-MODELS_DIR   = Path(__file__).parent / "models"
-FEATURES_PATH = MODELS_DIR / "feature_names.pkl"   # should contain TOP FEATURES ONLY
+MODELS_DIR = Path(__file__).parent / "models"
+FEATURES_PATH = MODELS_DIR / "feature_names.pkl"
 TESTSET_PATH  = MODELS_DIR / "test_set.csv"
 
-# -------- Loaders (cached) --------
 @st.cache_resource
 def load_feature_names():
-    if not FEATURES_PATH.exists():
-        raise FileNotFoundError("feature_names.pkl not found. Export from the training notebook first.")
-    feats = joblib.load(FEATURES_PATH)
-    # enforce list[str]
-    feats = [str(f) for f in feats]
-    return feats
+    return joblib.load(FEATURES_PATH)
 
 @st.cache_resource
 def load_models():
     models = {}
-    if not MODELS_DIR.exists():
-        return models
     for p in MODELS_DIR.glob("*.pkl"):
         if p.name == "feature_names.pkl":
             continue
@@ -39,21 +30,27 @@ def load_models():
 @st.cache_resource
 def load_testset():
     if TESTSET_PATH.exists():
-        try:
-            return pd.read_csv(TESTSET_PATH)
-        except Exception as e:
-            st.warning(f"Could not read test_set.csv: {e}")
+        return pd.read_csv(TESTSET_PATH)
     return None
 
-# -------- Helpers --------
 def sanitized_name(name: str) -> str:
-    return re.sub(r"[^A-Za-z0-9_+ -]+", " ", name).strip()
+    return re.sub(r"[^A-Za-z0-9_+-]+", " ", name).strip()
 
-def ensure_int_df(df: pd.DataFrame, feature_names: list[str]) -> pd.DataFrame:
-    # Keep only known columns, correct order, coerce to integers.
-    X = df[feature_names].copy()
-    # coerce to int; if any column cannot be cast, raise
-    return X.astype("int64", errors="raise")
+# def predict_single(pipe, feature_names):
+#     st.subheader("Single Prediction")
+#     cols = st.columns(3)
+#     values = {}
+#     for i, f in enumerate(feature_names):
+#         with cols[i % 3]:
+#             values[f] = st.number_input(f, value=0.0, format="%.4f")
+#     if st.button("Predict", type="primary"):
+#         X = pd.DataFrame([values], columns=feature_names)
+#         y_pred = pipe.predict(X)[0]
+#         st.success(f"Predicted stress level: **{int(y_pred)}**")
+#         if hasattr(pipe, "predict_proba"):
+#             proba = pipe.predict_proba(X)[0]
+#             st.write("Class probabilities:")
+#             st.bar_chart(pd.DataFrame(proba, index=[f"class_{i}" for i in range(len(proba))], columns=["prob"]))
 
 def predict_single(pipe, feature_names):
     st.subheader("Single Prediction")
@@ -72,20 +69,33 @@ def predict_single(pipe, feature_names):
             st.write("Class probabilities:")
             st.bar_chart(pd.DataFrame(proba, index=[f"class_{i}" for i in range(len(proba))], columns=["prob"]))
 
+# def predict_batch(pipe, feature_names):
+#     st.subheader("Batch Prediction (CSV upload)")
+#     up = st.file_uploader("Upload CSV with the training feature columns", type=["csv"])
+#     if up is not None:
+#         df = pd.read_csv(up)
+#         st.write("Preview:", df.head())
+#         try:
+#             preds = pipe.predict(df[feature_names])
+#             st.write("Predictions (first 20):")
+#             st.dataframe(pd.DataFrame({"prediction": preds}).head(20))
+#         except Exception as e:
+#             st.error(f"Failed to predict: {e}")
+
 def predict_batch(pipe, feature_names):
     st.subheader("Batch Prediction (CSV upload)")
-    up = st.file_uploader("Upload CSV with the training TOP-FEATURE columns", type=["csv"])
+    up = st.file_uploader("Upload CSV with the training feature columns", type=["csv"])
     if up is not None:
         df = pd.read_csv(up)
         st.write("Preview:", df.head())
+        # keep only known columns in correct order, coerce to int
         try:
-            Xb = ensure_int_df(df, feature_names)
+            Xb = df[feature_names].copy()
         except KeyError as e:
             st.error(f"CSV is missing required columns: {e}")
             return
-        except Exception as e:
-            st.error(f"Failed to coerce inputs to integers: {e}")
-            return
+        # coerce to integers (errors='raise' will throw if non-numeric)
+        Xb = Xb.astype("int64", errors="raise")
         try:
             preds = pipe.predict(Xb)
             st.write("Predictions (first 20):")
@@ -95,41 +105,28 @@ def predict_batch(pipe, feature_names):
 
 def evaluate_on_test(pipe, testset, feature_names, target_col="stress_level"):
     st.subheader("Evaluate on bundled test set")
-    try:
-        X_eval = ensure_int_df(testset, feature_names)
-    except Exception as e:
-        st.error(f"Bundled test_set.csv is invalid or missing required columns: {e}")
-        return
-    if target_col not in testset.columns:
-        st.warning(f"Target column '{target_col}' not found in test_set.csv")
-        return
     y_true = testset[target_col].values
-    try:
-        y_pred = pipe.predict(X_eval)
-    except Exception as e:
-        st.error(f"Failed to predict on test set: {e}")
-        return
+    y_pred = pipe.predict(testset[feature_names])
     acc = accuracy_score(y_true, y_pred)
     st.write(f"**Accuracy:** {acc:.4f}")
-    st.text("Classification report:\n" + classification_report(y_true, y_pred))
+    cr = classification_report(y_true, y_pred, output_dict=False)
+    st.text("Classification report:\n" + cr)
     cm = confusion_matrix(y_true, y_pred, labels=[0,1,2])
     st.text("Confusion matrix (rows=actual, cols=pred):\n" + str(cm))
 
-# -------- Main App --------
 def main():
-    st.title("🎓 Student Stress — Model Explorer (Top-Features & Integer Inputs)")
+    st.title("🎓 Student Stress — Model Explorer")
 
-    try:
-        feature_names = load_feature_names()
-    except Exception as e:
-        st.error(str(e))
+    if not FEATURES_PATH.exists():
+        st.error("feature_names.pkl not found in models/. Export from the notebook first.")
         st.stop()
 
+    feature_names = load_feature_names()
     models = load_models()
     testset = load_testset()
 
     if not models:
-        st.warning("No models found in models/. Export .pkl files from the training notebook first.")
+        st.warning("No models found in models/. Export from the notebook to populate .pkl files.")
         st.stop()
 
     names = sorted(models.keys())
@@ -146,7 +143,7 @@ def main():
     if testset is not None:
         evaluate_on_test(pipe, testset, feature_names)
     else:
-        st.info("No test_set.csv bundled. Export it from the training notebook to enable on-app evaluation.")
+        st.info("No test_set.csv bundled. Export it from the notebook to enable on‑app evaluation.")
 
 if __name__ == "__main__":
     main()

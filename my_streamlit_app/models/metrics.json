@@ -1,23 +1,32 @@
 {
   "KNN(k=5)": {
-    "accuracy": 0.8545454545454545
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
   },
   "LogisticRegression": {
-    "accuracy": 0.8818181818181818
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
   },
   "DecisionTree": {
-    "accuracy": 0.8590909090909091
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
   },
   "Baseline LogReg": {
-    "accuracy": 0.8818181818181818
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
   },
   "LogReg + ROS": {
-    "accuracy": 0.8818181818181818
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
   },
   "LogReg + RUS": {
-    "accuracy": 0.8818181818181818
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
   },
   "LogReg + SMOTE": {
-    "accuracy": 0.8863636363636364
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+  },
+  "Random Forest (best)": {
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+  },
+  "Gradient Boosting (best)": {
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
+  },
+  "AdaBoost (best)": {
+    "error": "columns are missing: {'living_conditions', 'noise_level', 'safety', 'peer_pressure', 'mental_health_history', 'breathing_problem'}"
   }
 }
