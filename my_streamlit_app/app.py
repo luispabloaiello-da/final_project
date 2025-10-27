@@ -1,8 +1,6 @@
 import os, re, json, joblib
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import streamlit as st
 from pathlib import Path
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
@@ -114,13 +112,7 @@ def evaluate_on_test(pipe, testset, feature_names, target_col="stress_level"):
     st.write(f"**Accuracy:** {acc:.4f}")
     st.text("Classification report:\n" + classification_report(y_true, y_pred))
     cm = confusion_matrix(y_true, y_pred, labels=[0,1,2])
-    # st.text("Confusion matrix (rows=actual, cols=pred):\n" + str(cm))
-    plt.figure(figsize=(6,4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='YlGnBu')
-    plt.title('Confusion Matrix')
-    plt.xlabel('Predicted')
-    plt.ylabel('Actual')
-    plt.show()
+    st.text("Confusion matrix (rows=actual, cols=pred):\n" + str(cm))
 
 # -------- Main App --------
 def main():
