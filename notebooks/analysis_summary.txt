@@ -4,7 +4,7 @@ STRESS LEVEL DATASET ANALYSIS SUMMARY
 
 Dataset Overview:
 - Total Records: 1100
-- Total Features: 21
+- Total Features: 18
 - No Missing Values: True
 - Duplicate Rows: 0
 
