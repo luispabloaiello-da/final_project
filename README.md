@@ -1,128 +1,130 @@
-# NYC Jobs Data Analysis & Data Cleaning Project
+# Student Stress Prediction — End-to-End ML Project
+
+> **Links**  
+> **Slides:** _add your link here_ → https://YOUR-SLIDES-URL  
+> **Streamlit app:** _add your link here_ → https://YOUR-APP-URL.streamlit.app
 
 ## Overview
-
-This project focuses on cleaning, transforming, and analyzing public job postings for New York City, using a structured Python (Pandas) workflow and custom functions for robust data wrangling. The source data includes large CSVs with diverse job roles, salary ranges, and categorical features. The main goal is to provide clean, analysis-ready datasets for insights into salary distributions, contract types, agency trends, and demand for data-centric skills.
-
-The project is organized into modular Jupyter notebooks and Python scripts, with a special emphasis on reproducible preprocessing and targeted extraction of roles related to data analysis, engineering, and modern data skills.
-
-The workflow is structured around dynamic file paths managed via a YAML configuration file, ensuring portability and easy customization.
+This project predicts a student’s **stress level** (multi-class target: `0`, `1`, `2`) from ~20 **numeric survey features** spanning **psychological**, **physiological**, **environmental**, **academic**, and **social** factors.  
+It includes **reproducible EDA**, **leak-free ML pipelines**, **model comparisons**, and a **Streamlit app** for interactive scoring and evaluation.  
+The goal is a full analytics & ML workflow that’s easy for data-analytics students to follow and extend.
 
 ---
 
-## Data Sources
-
-- **NYC Jobs CSV files:** Two separate CSVs with thousands of job postings, each containing up to 30 columns.
-- **YAML configuration:** Manages all input/output paths for raw and cleaned data, as well as output figures.
-
----
-
-## Main Files and Structure
-
-### 1. `data_wrangling.ipynb`
-
-- Loads raw CSVs and YAML config for path management.
-- Applies cleaning functions from `functions.py`:
-  - Standardizes column names.
-  - Drops duplicates by job ID.
-  - Removes unnecessary columns.
-  - Cleans punctuation and normalizes text (job titles, skills).
-  - Converts dates to pandas datetime format.
-- Filters jobs by:
-  - **Business title** (extracts roles like "data analyst", "data engineer").
-  - **Preferred skills** (finds mentions of SQL, Python, BI, Tableau, ML, etc.).
-- Outputs three grouped CSVs:
-  - All other jobs.
-  - Data analyst/engineer roles.
-  - Jobs requiring specific data skills.
-- Includes summary tables for nulls, column types, and value counts.
-
-### 2. `functions.py`
-
-- Contains all custom data cleaning and transformation functions:
-  - Standardize column names.
-  - Drop duplicates.
-  - Concatenate DataFrames.
-  - Remove punctuation and lowercase.
-  - Drop irrelevant columns.
-  - Regex-based row filtering.
-  - Standardize dates.
-- Functions are written for flexible, repeatable use in notebooks.
-
-### 3. `data_insights - Copy.ipynb`
-
-- Loads cleaned CSVs and applies further transformation as needed.
-- Explores:
-  - Salary distributions by role type and skill requirements.
-  - Contract frequency (annual, hourly, daily) by group.
-  - Posting trends over time, highlighting recent demand for data talent.
-- Produces visualizations (matplotlib, seaborn):
-  - KDE plots for salary bands.
-  - Bar charts for contract types and agency hiring.
-  - Histograms for posting year.
-- Includes documented code cells explaining each plot and table and how to interpret results.
+## What You’ll Find
+- **Clean EDA & Prep:** distributions, outliers, correlations, **multicollinearity** checks (incl. VIF), **Mutual Information**, and a brief **PCA** summary.  
+- **Modeling:** consistent pipelines (shared preprocessing), multiple classifiers, optional resampling (**SMOTE**), and feature importance/coefficients helpers.  
+- **Comparisons:** accuracy + macro precision/recall/F1, classification reports, **confusion matrices**, and a clear **Top-2 model** selection.  
+- **Deployment:** export of fitted pipelines and a **Streamlit** app for single/batch predictions and on-app evaluation (pattern inspired by a prior “fraud scoring” project template).
 
 ---
 
-## Configuration
+## Data Snapshot
+From the EDA:
+- **Rows:** ~1,100  
+- **Features:** ~21 (all numeric)  
+- **Missing values:** none  
+- **Duplicates:** none  
+- **Target distribution (`stress_level`):** `{0: 373, 1: 358, 2: 369}` → roughly balanced, so **accuracy** is a fair primary metric.
 
-- All file paths for raw inputs, cleaned outputs, and figures are managed in `config.yaml`:
-  - Update this file to change inputs and outputs without modifying notebook logic.
-  - Example outputs managed via YAML include:
-    - Cleaned CSVs by job type and skill.
-    - Figures for salary, agency, and trends.
-
----
-
-## Key Features
-
-- **Robust Data Cleaning:** Handles missing values, inconsistent text, irrelevant columns, and duplicates.
-- **Skill Filtering:** Extracts jobs by business title and by presence of data-related keywords in the skills field using regex.
-- **Date Normalization:** Converts multiple date formats to pandas datetime for time-series analysis.
-- **Modular Outputs:** Splits the cleaned data into logical groups for focused analysis.
-- **Configurable Workflow:** Uses YAML for paths, making the notebooks portable and reusable.
+> Note: The dataset is for learning; values reflect typical student self-reports (not clinical labels).
 
 ---
 
-## Example Insights
+## Repo Structure
 
-- **Salary Distribution:** Data analyst and engineering roles have higher median starting salaries compared to general postings. Jobs mentioning modern data skills also tend to offer higher pay.
-- **Contract Type:** Most data-related roles are annual contracts; hourly/daily contracts are rare.
-- **Trends Over Time:** Demand for data-centric jobs is increasing, with more postings in recent years.
-- **Agency Hiring:** Top agencies hiring for data roles can be visualized and ranked using the included analysis
-
----
-
-## How to Use
-
-1. **Configure file paths:** Update `config.yaml` as needed for input/output CSVs and figures.
-2. **Run `data_wrangling.ipynb`:** This notebook processes raw data into analysis-ready CSVs.
-3. **Run `data_insights.ipynb`:** Explore cleaned datasets and generate summary tables and visualizations.
-4. **Customize filtering:** Adjust regex patterns or column selections in notebooks/scripts to focus on different roles or skills if needed.
-
----
-
-## Files Included
-
-- `data_wrangling.ipynb` — Main notebook for data cleaning and preparation.
-- `functions.py` — Library of custom preprocessing functions.
-- `data_insights.ipynb` — Notebook for data analysis and visualization.
-- `config.yaml` — Centralized config for all input/output file locations.
-- **CSV Outputs:** Cleaned, grouped datasets for further analysis (paths managed with YAML).
-- **Figures:** Visual outputs saved per YAML config.
-
-## Presentation Slides
-[[Link to Slides](https://www.canva.com/design/DAG0Ra3GTHo/xIG_axW6IWI_54hR0ECAoQ/edit?utm_content=DAG0Ra3GTHo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)]
+final_project/
+├── data/
+│ ├── raw/                          # original files
+│ └── clean/                        # cleaned/processed artifacts
+├── figures/                        # saved figures from EDA
+├── notebooks/
+│ ├── _main_dataset_analysis.ipynb  # EDA & preparation
+│ └── _main_model_training.ipynb    # model training, evaluation, export
+├── lib/
+│ └── functions.py                  # helpers (run_models_with_importances, importance tables, plotting)
+├── my_streamlit_app/
+│ ├── app.py                        # Streamlit app (single/batch predict + evaluation)
+│ ├── pages/01_Compare_Models.py    # optional: side-by-side model comparison page
+│ └── models/
+│ ├── *.pkl                         # exported fitted pipelines (incl. tuned “(best)” variants)
+│ ├── feature_names.pkl             # full training schema (ALL features)
+│ ├── test_set.csv                  # held-out test set for on-app evaluation
+│ └── metrics.json                  # quick accuracy per model
+├── README_StudentStress_DA_UPDATED.md          # detailed EDA notes & findings
+├── README_model_training_results_UPDATED.md    # modeling results & selection details
+└── README.md                                   # this file
 
 ---
 
-## Authors
-- Janna Julian
-- Sina Yazdi
-- Luis Pablo Aiello
+## End-to-End Workflow
+1) **EDA & Preparation** (`notebooks/_main_dataset_analysis.ipynb`)  
+   - Univariate distributions (skew, mean vs median)  
+   - Bivariate feature vs stress (box/violin, group stats)  
+   - Correlation (feature–feature & feature–target) + multicollinearity scanning  
+   - Outliers (IQR / z-score)  
+   - **Mutual Information** (non-linear relevance)  
+   - **PCA** for variance explanation (optional dimensionality reduction)  
+   _All steps include concise what/why/how notes for teaching clarity._
+
+2) **Modeling** (`notebooks/_main_model_training.ipynb`)  
+   - Leak-free pipelines with shared preprocessing evaluated across:  
+     **KNN, Logistic Regression, Decision Tree, Random Forest, Gradient Boosting, AdaBoost**, and **LogReg + SMOTE**.  
+   - Unified evaluation (accuracy, classification report, confusion matrix) and feature importance/coefficients where available.
+
+3) **Export & Deploy**  
+   - A final cell saves each **fitted pipeline** (`*.pkl`), the training **feature schema** (`feature_names.pkl`), the **test set** CSV, and a **metrics** JSON.  
+   - The **Streamlit** app loads these artifacts for single/batch prediction and on-app evaluation.
+
+---
+
+## Results (short version)
+**Test Accuracy (top models):**
+- **AdaBoost** — Accuracy ≈ **0.8864**
+- **Logistic Regression + SMOTE** — Accuracy ≈ **0.8864** 
+- **Close behind:** Random Forest & Logistic Regression — Accuracy ≈ **0.8818**
+
+**What the top-features say (recurring signals):**  
+High association with stress appeared for: **blood_pressure, sleep_quality, social_support, anxiety_level, depression, self_esteem, bullying, academic_performance, study_load, future_career_concerns**.  
+*(Direction depends on feature; e.g., self-esteem often decreases as stress increases.)*
+
+> **Why these two?**  
+They showed the best overall balance across classes (macro metrics) with strong recall on stressed classes while maintaining solid precision.
+
+---
+
+## How to Reproduce
+**Environment:** Python 3.10+ · `pandas` · `numpy` · `scikit-learn` · `imbalanced-learn` · `matplotlib` · `joblib` · `streamlit`
+
+**Steps**
+1. **Run EDA**: open `_main_dataset_analysis.ipynb`, execute all cells, check that the snapshot matches the counts above.  
+2. **Train models**: open `_main_model_training.ipynb`, run the training & evaluation cells (e.g., `run_models_with_importances(...)`) and review comparisons.  
+3. **Export for Streamlit**: run the final **“Streamlit Export Setup (Stress)”** cell → writes `*.pkl`, `feature_names.pkl`, `test_set.csv`, and `metrics.json` into `my_streamlit_app/models/`.  
+4. **Launch the app (local)**:
+   ```bash
+   cd my_streamlit_app
+   pip install -r requirements.txt
+   streamlit run app.py
+
+> Run the export **after** training so all fitted pipelines (e.g., AdaBoost) are in memory to be saved.
+
+---
+
+## Streamlit App
+**Local usage**
+```bash
+cd my_streamlit_app
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+---
+
+## Authors:
+
+- **Luis Pablo Aiello** — Data Analytics Student (Cohort Sep-2025)
 
 ---
 
 ## License
-
-This repository is for educational, analytical, and non-commercial purposes only. Data is derived from publicly available NYC jobs datasets.
+Educational use within the bootcamp cohort; dataset is survey-based and used for learning purposes.

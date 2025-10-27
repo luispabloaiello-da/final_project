@@ -186,7 +186,7 @@ Human‑readable documentation of the analysis and how it prepares the dataset f
 
 ## Authors
 
-- Luis Pablo Aiello (Student, Data Analytics cohort)  
+- **Luis Pablo Aiello** — Data Analytics Student (Cohort Sep-2025)
 
 ---
 
