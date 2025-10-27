@@ -272,8 +272,6 @@ def plot_top_importances(df_imp: pd.DataFrame, top=20, value_col=None, title="To
     plt.tight_layout()
     plt.show()
     
-
-
 # ============================================================
 # Run a model suite and extract top features/coefficients
 # ============================================================
