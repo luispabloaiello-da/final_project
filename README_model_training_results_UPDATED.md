@@ -323,3 +323,14 @@ y_pred_new = rf_pipe.predict(X_new)
 - Interpretable coefficients, well‑calibrated probabilities, very easy to operationalize.
 
 **Honorable mention:** Random Forest — virtually tied with plain LogReg; robust and stable with native importances.
+
+---
+
+## Authors:
+
+- **Luis Pablo Aiello** — Data Analytics Student (Cohort Sep-2025)
+
+---
+
+## License
+Educational use within the bootcamp cohort; dataset is survey-based and used for learning purposes.
