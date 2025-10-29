@@ -33,6 +33,7 @@ From the EDA:
 
 ## Repo Structure
 
+```
 final_project/
 ├── data/
 │ ├── raw/                          # original files
@@ -54,6 +55,41 @@ final_project/
 ├── README_StudentStress_DA_UPDATED.md          # detailed EDA notes & findings
 ├── README_model_training_results_UPDATED.md    # modeling results & selection details
 └── README.md                                   # this file
+```
+
+---
+
+## Environment & Installation (uv)
+
+This project targets Python **3.13** (see `requires-python = ">=3.13"`). If your system default is lower, create the venv with an explicit 3.13 interpreter. 
+
+1) **Check you have uv**
+
+   `uv --version`
+
+2) **Create & activate a virtual environment**
+
+- **Windows (PowerShell)**
+
+   `uv venv .venv --python 3.13`
+   `.\.venv\Scripts\Activate.ps1`
+
+3) **Install dependencies (choose one profile)**
+
+   A) **Production (app + inference only)**
+   - Installs the minimal set to run the Streamlit app and unpickle pipelines:
+
+      `uv pip install -r requirements-dev.txt`
+
+   >  Alternative: if you prefer installing from pyproject.toml, run:
+      
+   >   `uv sync`
+
+   -  This will install everything declared there (includes Jupyter and ipykernel). Use this only if you want notebooks in the same env.
+
+4) **Optional system dependency**
+
+- **Graphviz** system binary (for certain visualizations) may be required separately from `graphviz` Python bindings depending on your OS.
 
 ---
 

@@ -1,32 +1,14 @@
 {
-  "KNN(k=5)": {
-    "accuracy": 0.8545454545454545
-  },
-  "LogisticRegression": {
-    "accuracy": 0.8818181818181818
-  },
-  "DecisionTree": {
-    "accuracy": 0.8590909090909091
-  },
-  "Baseline LogReg": {
-    "accuracy": 0.8818181818181818
-  },
-  "LogReg + ROS": {
-    "accuracy": 0.8818181818181818
+  "Random Forest": {
+    "accuracy": 0.8954545454545455
   },
   "LogReg + RUS": {
-    "accuracy": 0.8818181818181818
-  },
-  "LogReg + SMOTE": {
-    "accuracy": 0.8863636363636364
-  },
-  "Random Forest (best)": {
-    "accuracy": 0.8818181818181818
-  },
-  "Gradient Boosting (best)": {
     "accuracy": 0.8909090909090909
   },
-  "AdaBoost (best)": {
-    "accuracy": 0.8863636363636364
+  "LogReg + SMOTE": {
+    "accuracy": 0.8909090909090909
+  },
+  "Gradient Boosting (best)": {
+    "accuracy": 0.8954545454545455
   }
 }

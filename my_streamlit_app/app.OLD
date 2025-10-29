@@ -18,7 +18,8 @@ def load_feature_names():
     if not FEATURES_PATH.exists():
         raise FileNotFoundError("feature_names.pkl not found. Export from the training notebook first.")
     feats = joblib.load(FEATURES_PATH)
-    feats = [str(f) for f in feats]  # enforce list[str]
+    # enforce list[str]
+    feats = [str(f) for f in feats]
     return feats
 
 @st.cache_resource
@@ -53,54 +54,22 @@ def ensure_int_df(df: pd.DataFrame, feature_names: list[str]) -> pd.DataFrame:
     X = df[feature_names].copy()
     return X.astype("int64", errors="raise")
 
-def _column_unique_options(testset: pd.DataFrame | None, col: str):
-    """Return sorted unique options for a column from test_set.csv (as integers if possible)."""
-    if testset is None or col not in testset.columns:
-        return None
-    colvals = testset[col].dropna()
-    # Try integers first
-    try:
-        vals = np.sort(colvals.astype("int64").unique())
-        return list(vals.tolist())
-    except Exception:
-        # Fallback to generic unique values
-        vals = pd.unique(colvals)
-        try:
-            return sorted(vals.tolist())
-        except Exception:
-            return list(vals)
-
-def predict_single(pipe, feature_names, testset):
+def predict_single(pipe, feature_names):
     st.subheader("Single Prediction")
     cols = st.columns(3)
     values = {}
-
     for i, f in enumerate(feature_names):
         with cols[i % 3]:
-            options = _column_unique_options(testset, f)
-            if options is not None and len(options) > 0:
-                # Dropdown populated from test_set.csv uniques
-                default_idx = 0
-                values[f] = st.selectbox(f, options=options, index=default_idx, key=f"sb_{f}")
-            else:
-                # Fallback: numeric input if we cannot derive options
-                values[f] = st.number_input(f, value=0, step=1, format="%d", key=f"ni_{f}")
-
+            # integer-only input
+            values[f] = st.number_input(f, value=0, step=1, format="%d")
     if st.button("Predict", type="primary"):
-        try:
-            X = pd.DataFrame([values], columns=feature_names).astype("int64", errors="raise")
-        except Exception as e:
-            st.error(f"Failed to build input row as integers: {e}")
-            return
-        try:
-            y_pred = pipe.predict(X)[0]
-            st.success(f"Predicted stress level: **{int(y_pred)}**")
-            if hasattr(pipe, "predict_proba"):
-                proba = pipe.predict_proba(X)[0]
-                st.write("Class probabilities:")
-                st.bar_chart(pd.DataFrame(proba, index=[f"class_{i}" for i in range(len(proba))], columns=["prob"]))
-        except Exception as e:
-            st.error(f"Prediction failed: {e}")
+        X = pd.DataFrame([values], columns=feature_names).astype("int64")
+        y_pred = pipe.predict(X)[0]
+        st.success(f"Predicted stress level: **{int(y_pred)}**")
+        if hasattr(pipe, "predict_proba"):
+            proba = pipe.predict_proba(X)[0]
+            st.write("Class probabilities:")
+            st.bar_chart(pd.DataFrame(proba, index=[f"class_{i}" for i in range(len(proba))], columns=["prob"]))
 
 def predict_batch(pipe, feature_names):
     st.subheader("Batch Prediction (CSV upload)")
@@ -168,7 +137,7 @@ def main():
 
     col1, col2 = st.columns(2)
     with col1:
-        predict_single(pipe, feature_names, testset)  # <-- pass testset for dropdown options
+        predict_single(pipe, feature_names)
     with col2:
         predict_batch(pipe, feature_names)
 

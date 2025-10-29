@@ -8,17 +8,24 @@ import seaborn as sns
 import datetime as dt
 import re
 
+from scipy.stats import t as t_dist
 from scipy import stats
 from scipy.stats import f_oneway
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.preprocessing import MinMaxScaler, StandardScaler, OneHotEncoder, OrdinalEncoder,LabelEncoder
-from sklearn.feature_selection import mutual_info_regression
-from sklearn.decomposition import PCA
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline as SkPipeline
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, OneHotEncoder, OrdinalEncoder,LabelEncoder
+from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import mutual_info_regression
+from sklearn.decomposition import PCA
+from sklearn.metrics import (accuracy_score, balanced_accuracy_score, 
+                             f1_score, classification_report, 
+                             confusion_matrix, roc_auc_score, 
+                             average_precision_score, silhouette_score
+                            )
 
 try:
     # If you also use imblearn Pipelines for resampling (ROS/RUS/SMOTE)
@@ -96,7 +103,7 @@ def drop_outliers_iqr(df: pd.DataFrame, cols=[], k: float = 1.5, how:str='any'):
     return kept, removed
 
 #================================================================
-# Model explainability helpers: feature names & importances/coeffs
+# Model explainability helpers: feature names and importances/coeffs
 #================================================================
 
 # Evaluation helpers
@@ -388,3 +395,139 @@ def run_models_with_importances(
 
     return results
 
+# ============================================================
+# KNN: Ranking-with-Confidence for choosing n_neighbors
+# ============================================================
+
+def _cv_scores_with_ci(
+    estimator,
+    X, y,
+    *,
+    scoring="accuracy",
+    cv=5,
+    random_state=42
+):
+    """
+    Run cross-validation and return mean, std, n_folds, se, t_crit, ci_low, ci_high.
+    CI uses a t-interval for the mean across folds.
+    """
+    # Stratified K-Fold for classification
+    if isinstance(cv, int):
+        cv = StratifiedKFold(n_splits=cv, shuffle=True, random_state=random_state)
+
+    scores = cross_val_score(estimator, X, y, cv=cv, scoring=scoring, n_jobs=None)
+    mean = float(np.mean(scores))
+    std = float(np.std(scores, ddof=1)) if len(scores) > 1 else 0.0
+    n = len(scores)
+    se = std / np.sqrt(n) if n > 0 else np.nan
+    # 95% CI by default (alpha=0.05) -> caller can change alpha in wrapper
+    return mean, std, n, se
+
+
+def knn_rank_with_confidence(
+    preprocess,
+    X, y,
+    *,
+    ks=range(1, 41, 2),
+    scoring="accuracy",
+    cv=5,
+    alpha=0.05,
+    weights="uniform",
+    metric="minkowski",
+    sampler=None,
+    sampler_name="sampler",
+    pipeline_cls=None,
+    random_state=42
+):
+    """
+    Evaluate KNN for a range of k using CV and compute 100*(1-alpha)% CIs
+    for the mean score. Returns a DataFrame with mean, CI, and ranks,
+    plus the recommended k that maximizes the lower CI bound (LCB).
+
+    If you use resampling (ROS/RUS/SMOTE), pass sampler and set pipeline_cls=ImbPipeline.
+    """
+    if pipeline_cls is None:
+        pipeline_cls = SkPipeline
+
+    rows = []
+    # build CV object once for determinism
+    cv_obj = StratifiedKFold(n_splits=cv, shuffle=True, random_state=random_state)
+
+    for k in ks:
+        steps = [('prep', preprocess)]
+        if sampler is not None:
+            steps.append((sampler_name, sampler))
+        steps.append(('model', KNeighborsClassifier(n_neighbors=k, weights=weights, metric=metric)))
+        pipe = pipeline_cls(steps)
+
+        mean, std, n, se = _cv_scores_with_ci(pipe, X, y, scoring=scoring, cv=cv_obj, random_state=random_state)
+
+        # t critical value for two-sided CI
+        tcrit = float(t_dist.ppf(1 - alpha/2, df=max(n - 1, 1))) if n > 1 else np.nan
+        half = tcrit * se if np.isfinite(tcrit) else 0.0
+        ci_low = mean - half
+        ci_high = mean + half
+
+        rows.append({
+            "k": int(k),
+            "mean": mean,
+            "std": std,
+            "folds": n,
+            "se": se,
+            "tcrit": tcrit,
+            "ci_low": ci_low,
+            "ci_high": ci_high
+        })
+
+    df = pd.DataFrame(rows).sort_values(["mean", "k"], ascending=[False, True]).reset_index(drop=True)
+
+    # Ranks by mean score and by lower CI bound (LCB)
+    df["rank_mean"] = df["mean"].rank(ascending=False, method="min").astype(int)
+    df["rank_lcb"]  = df["ci_low"].rank(ascending=False, method="min").astype(int)
+
+    # Recommended: maximize the lower CI bound (conservative best)
+    best_idx = int(df["ci_low"].idxmax())
+    best_k = int(df.loc[best_idx, "k"])
+
+    # Non-inferior set (CIs overlap with the best by a small margin)
+    best_low, best_high = df.loc[best_idx, ["ci_low", "ci_high"]].values
+    df["overlaps_best"] = (df["ci_high"] >= best_low) & (df["ci_low"] <= best_high)
+
+    return df, best_k
+
+
+def plot_knn_ranking(df_rank, title="KNN CV Accuracy with 95% CIs"):
+    """
+    Errorbar plot of mean CV score vs k with 95% CIs.
+    Highlights the k with the largest lower CI bound (rank_lcb = 1).
+    """
+    if not {"k","mean","ci_low","ci_high","rank_lcb"}.issubset(df_rank.columns):
+        raise ValueError("df_rank must include columns: k, mean, ci_low, ci_high, rank_lcb")
+
+    dfp = df_rank.sort_values("k")
+    y = dfp["mean"].values
+    lo = dfp["ci_low"].values
+    hi = dfp["ci_high"].values
+    x = dfp["k"].values
+
+    plt.figure(figsize=(8,5))
+    # central points
+    plt.plot(x, y, marker="o", linestyle="-", label="CV mean")
+    # CI whiskers
+    for xi, yi, l, h in zip(x, y, lo, hi):
+        plt.vlines(xi, l, h, lw=2, alpha=0.7)
+
+    # highlight best by LCB
+    best = dfp.loc[dfp["rank_lcb"] == 1]
+    if not best.empty:
+        bx = best["k"].iloc[0]
+        by = best["mean"].iloc[0]
+        plt.scatter([bx], [by], s=90, edgecolor="black", facecolor="none", label=f"Best by LCB (k={bx})", zorder=3)
+
+    plt.title(title)
+    plt.xlabel("n_neighbors (k)")
+    plt.ylabel("CV accuracy (mean ± 95% CI)")
+    plt.grid(True, axis="y", alpha=0.25)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
