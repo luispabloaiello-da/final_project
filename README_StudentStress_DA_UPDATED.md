@@ -10,7 +10,7 @@ This project analyzes a nationwide **Student Stress Monitoring** dataset to unde
 - **Missing values:** none detected
 - **Duplicate rows:** 0
 - **Target distribution (multi‑class `stress_level`):** {0: 373, 1: 358, 2: 369}
-These checks confirm a clean, balanced sample size, with a roughly even split across three stress levels. fileciteturn1file0
+These checks confirm a clean, balanced sample size, with a roughly even split across three stress levels.
 
 We grouped the ~20 variables into five factor families provided by the study design (Psychological, Physiological, Environmental, Academic, Social). Our analysis focuses on **feature relevance** (correlation & mutual information), **outliers**, and **dimensionality reduction** so the dataset is ready for modeling.
 
@@ -20,7 +20,7 @@ We grouped the ~20 variables into five factor families provided by the study des
 
 - **Student Stress Monitoring dataset** (survey‑based; ~20 features across 5 factor groups).
 - **`_main_dataset_analysis.ipynb`** — primary analysis notebook used in this project.
-- **`analysis_summary.txt`** — machine‑readable summary produced from `_main_dataset_analysis.ipynb` runs; used to collect and report the key statistics and recommendations. fileciteturn1file0
+- **`analysis_summary.txt`** — machine‑readable summary produced from `_main_dataset_analysis.ipynb` runs; used to collect and report the key statistics and recommendations.
 
 ---
 
