@@ -15,3 +15,4 @@ output_data:
   fig6: "../figures/outlier_percentages.png"
   fig7: "../figures/mutual_information_scores.png"
   fig8: "../figures/pca_analysis.png"
+  fig9: "../figures/risk_signal_strength.png"
