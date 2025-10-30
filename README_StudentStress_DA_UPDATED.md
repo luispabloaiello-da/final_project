@@ -60,7 +60,7 @@ Below we document each analysis step exactly as performed, with **purpose**, **w
 - **Why it matters for ML:** Strong inter-feature correlation can inflate variance and blur interpretation. If pairs exceed the threshold, either **drop one feature from each pair** (choose by domain value, missingness, or predictive signal) or prefer **regularized** or **tree/ensemble** models that are less sensitive to collinearity.
 > **Insight:** For **Multicollinearity Detection** we should ignore correlations with the **target** (`stress_level`) and only act on **feature–feature** pairs.
 
-**High-correlation pairs (|r| > 0.7):**
+**High-correlation pairs (|r| > 0.70):**
 - `anxiety_level` – `future_career_concerns`: r = 0.717
 - `future_career_concerns` – `bullying`: r = 0.711
 - `anxiety_level` – `bullying`: r = 0.710
@@ -115,13 +115,19 @@ Below we document each analysis step exactly as performed, with **purpose**, **w
 - **Why it matters for ML:** Guides whether to reduce dimensionality to cut noise and speed training.
   > **Insight:** About **16 components** explain **95%** of the variance; PCA can be used as an optional step for compact representations.
 
-#### 10) STATISTICAL TESTS
+#### 10) Risk signal strength by factor group
+- **Purpose:** Summarize the EDA findings at the *factor* level (not single features) to show which areas of a student’s life are most consistently associated with higher stress.
+- **What the code does:** Builds a simple horizontal/vertical bar chart with 5 groups — **“Bullying / peer pressure”**, **“Mental health (anxiety/depression)”**, **“Sleep & health (sleep_quality, blood_pressure)”**, **“Academic load / future career”**, and **“Social support”** — and assigns each group a relative “risk signal” score (e.g. 5–5–4–4–3) based on how often features from that group appeared as top correlates/MI features or showed clear separation across stress levels.
+- **Why it matters for ML:** EDA often surfaces *clusters* of predictive features (e.g. anxiety + depression + future_career_concerns + bullying). Grouping them makes it easier to 1) explain the model to non-technical stakeholders, 2) design domain-level interventions (anti-bullying, mental-health programs, academic-load monitoring), and 3) later build dashboard views that aggregate model outputs by factor family.
+> **Insight:** The strongest signals came from **Bullying / peer pressure** and **Mental health (anxiety, depression)** — these repeatedly showed higher values in the high-stress class. Close behind were **Sleep & health** (worse sleep, higher blood pressure) and **Academic load / future career** (students worried about their future or overloaded with study tended to be more stressed). **Social support** also mattered, but slightly less than the other groups — low support often co-occurred with high stress, so it is still a relevant monitoring dimension.
+
+#### 111) STATISTICAL TESTS
 - **Purpose:** Check whether selected features differ in **mean** across stress_level groups.
 - **What the code does:** Per feature, checks **normality (Shapiro)** and **variance homogeneity (Levene)** to choose **ANOVA + Tukey** or **Kruskal–Wallis + Dunn (Holm)**; reports **p‑values** and **effect sizes** (η² / ε²).
 - **Why it matters for ML:** Validates EDA patterns, ranks features by statistical signal, and informs which effects are **small/medium/large** for model focus.
   > **Insight:** ANOVA shows significant mean differences across stress levels for **`anxiety_level` (F = 655.45, p < 0.001), `self_esteem` (F = 775.39, p < 0.001), `depression` (F = 652.63, p < 0.001), and `academic_performance` (F = 639.22, p < 0.001)**. Largest shifts appear between stress **0 vs 2** (confirm via group means/plots). These features are strong candidates for the model and for monitoring class separation.
 
-#### 11) Preprocessing recommendations for modeling
+#### 12) Preprocessing recommendations for modeling
 - **Purpose:** Convert analysis findings into a concrete ML‑ready pipeline.
 - **What the code does:** Summarizes scaling choice, feature selection breadth, and model family hints.
 - **Why it matters for ML:** Ensures reproducible, leak‑free preprocessing and a reasonable starting feature set.

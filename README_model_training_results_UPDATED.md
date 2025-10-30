@@ -146,7 +146,7 @@ Across models that expose importances/coefficients (trees/ensembles and linear),
 - **Importance (trees):** these features carry most split gain, confirming their predictive signal.  
 *(Use `feature_importances_dataframe(...)` + `plot_top_importances(...)` to see model-specific rankings.)*  :contentReference[oaicite:5]{index=5}
 
-Interpretation guide: higher absolute coefficients (linear) or higher importance scores (trees/ensembles) indicate stronger contribution to the model’s decision. Always cross‑check directionality with the **classification report** and domain knowledge.
+> **Interpretation guide:** higher absolute coefficients (linear) or higher importance scores (trees/ensembles) indicate stronger contribution to the model’s decision. Always cross‑check directionality with the **classification report** and domain knowledge.
 
 ---
 
@@ -318,18 +318,18 @@ y_pred_new = rf_pipe.predict(X_new)
 
 ## Model Selection (Top‑3)
 
-**1) **Random Forest — Best overall balance**
+## Random Forest — Best overall balance
 
-- **Why:** Highest **Accuracy (0.8955)** and best **Macro F1 (0.8953)** in the global table; per-class F1s are all high and tight (C0 **0.881**, C1 **0.904**, C2 **0.901**); confusion matrix is the most **diagonal-heavy** across all three classes.
-- **When to pick:** You want balanced errors across 0/1/2, strong generalization, and native feature importances. 
+  - **Why:** Highest **Accuracy (0.8955)** and best **Macro F1 (0.8953)** in the global table; per-class F1s are all high and tight (C0 **0.881**, C1 **0.904**, C2 **0.901**); confusion matrix is the most **diagonal-heavy** across all three classes.
+  - **When to pick:** You want balanced errors across 0/1/2, strong generalization, and native feature importances. 
 
-**2) **Logistic Regression + RUS** — Simplicity with near-SOTA performance
-- **Why:** Accuracy **0.8909** with **Macro F1 0.8918**, the best among LR variants; gains a bit of **Class-0 recall** while keeping **Class-1/2** recall very strong; super **interpretable** and **lightweight** for deployment.
-- **When to pick:** You need **interpretability** and minimal complexity with performance within ~0.5% of the top.
+## Logistic Regression + RUS — Simplicity with near-SOTA performance
+  - **Why:** Accuracy **0.8909** with **Macro F1 0.8918**, the best among LR variants; gains a bit of **Class-0 recall** while keeping **Class-1/2** recall very strong; super **interpretable** and **lightweight** for deployment.
+  - **When to pick:** You need **interpretability** and minimal complexity with performance within ~0.5% of the top.
 
-**3) **Logistic Regression + SMOTE** — Prioritize catching stressed students
-- **Why:** Ties near the top in Accuracy (**0.8909**) with the best **Class-1/2 recall** among LR variants. If recall on **stressed classes (1/2)** is your north star, SMOTE’s confusion matrix shows fewer **false negatives** there.
-- **When to pick:** You prefer **slightly higher recall** on stressed classes even if macro precision dips a little.
+## Logistic Regression + SMOTE — Prioritize catching stressed students
+  - **Why:** Ties near the top in Accuracy (**0.8909**) with the best **Class-1/2 recall** among LR variants. If recall on **stressed classes (1/2)** is your north star, SMOTE’s confusion matrix shows fewer **false negatives** there.
+  - **When to pick:** You prefer **slightly higher recall** on stressed classes even if macro precision dips a little.
 
 > **Note on Gradient Boosting (tuned):** the **updated results table** shows **GB+HP** tying Random Forest at **0.8955** accuracy. If that tuned model is the candidate for deployment (and reproducibly re-fit on the same schema), it can **swap into #1/#2** with Random Forest. Use the tuned model’s per-class tables on the same test split to confirm macro balance before finalizing
 

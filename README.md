@@ -1,8 +1,8 @@
 # Student Stress Prediction — End-to-End ML Project
 
 > **Links**  
-> **Slides:** _add your link here_ → https://YOUR-SLIDES-URL  
-> **Streamlit app:** _add your link here_ → https://YOUR-APP-URL.streamlit.app
+> **Slides:** → [Student Stress Prediction](https://www.canva.com/design/DAG3FBg1QyA/JIeaf5_BqknLrb2mvHibbw/edit?utm_content=DAG3FBg1QyA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)  
+> **Streamlit app:** → [Student Stress Prediction— Model Explorer (Dropdown Inputs)](https://finalproject-3ayxr2iyk4pzmubour3zpm.streamlit.app/#student-stress-model-explorer) 
 
 ## Overview
 This project predicts a student’s **stress level** (multi-class target: `0`, `1`, `2`) from ~20 **numeric survey features** spanning **psychological**, **physiological**, **environmental**, **academic**, and **social** factors.  
