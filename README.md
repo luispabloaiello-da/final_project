@@ -116,9 +116,13 @@ This project targets Python **3.13** (see `requires-python = ">=3.13"`). If your
 
 ## Results (short version)
 **Test Accuracy (top models):**
-- **AdaBoost** — Accuracy ≈ **0.8864**
-- **Logistic Regression + SMOTE** — Accuracy ≈ **0.8864** 
-- **Close behind:** Random Forest & Logistic Regression — Accuracy ≈ **0.8818**
+- **Random Forest** → best **overall balance** (Acc. 0.8955, Macro F1 0.8953)
+- **Logistic Reg + RUS** → Acc. **0.8909**, simplest to explain, good class-0 recall
+- **Logistic Reg + SMOTE** → Acc. **0.8909**, best recall on stressed classes (1, 2)
+- **Gradient Boosting + hiperparam** → Acc. 0.8955
+- Confusion matrices: mostly diagonal, only 1 ↔ 2 mix
+- Top features consistent across models
+
 
 **What the top-features say (recurring signals):**  
 High association with stress appeared for: **blood_pressure, sleep_quality, social_support, anxiety_level, depression, self_esteem, bullying, academic_performance, study_load, future_career_concerns**.  
